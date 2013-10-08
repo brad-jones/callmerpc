@@ -136,7 +136,10 @@ class Server
 			);
 			
 			// This will tell us where the log entry was made from
-			self::$log->pushProcessor(new IntrospectionProcessor());
+			if ($this->loglevel == Logger::DEBUG)
+			{
+				self::$log->pushProcessor(new IntrospectionProcessor());
+			}
 		}
 		
 		// Setup the HTTP Server
