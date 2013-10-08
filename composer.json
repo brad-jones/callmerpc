@@ -1,0 +1,17 @@
+{
+	"name": "gears/callmerpc",
+	"description": "A very simple http rpc server, go on callme baby!",
+	"homepage": "https://github.com/phpgearbox/callmerpc",
+	"keywords": ["rpc", "rest", "server", "json", "xml"],
+	"license": "MIT",
+	"require":
+	{
+		"php": ">=5.3",
+		"react/http": "0.3.*"
+	},
+	"autoload":
+	{
+		"psr-0": { "Gears\\CallMeRpc\\": "" }
+	},
+	"target-dir": "Gears/CallMeRpc"
+}
