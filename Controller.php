@@ -29,10 +29,10 @@ class Controller
 	 * -------------------------------------------------------------------------
 	 * void
 	 */
-	public function __construct($request, $response, $logger)
+	public function __construct($request, $response)
 	{
 		// Output each request object
-		$logger->addDebug(print_r($request, true));
+		Server::$log->addDebug(print_r($request, true));
 		
 		$response->writeHead(200, array('Content-Type' => 'text/plain'));
 		$response->end("Hello World\n");

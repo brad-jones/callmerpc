@@ -13,20 +13,66 @@
 
 namespace Gears\CallMeRpc;
 
+// Import monolog
+use \Monolog\Logger;
+use \Monolog\Handler\StreamHandler;
+use \Monolog\Handler\RotatingFileHandler;
+use \Monolog\Processor\IntrospectionProcessor;
+
 /**
  * Class: Server
  * =============================================================================
- * This is the main class that you will use to create your RPC server.
- * It contains all the wonderfull magic that ties everything together.
+ * This is the main HTTP Server for CallMeRpc, ie: You no longer need Apache,
+ * Nginx or some other Web Server, it is now built in using the reactphp
+ * framework.
  */
 class Server
 {
+	/**
+	 * Property: log
+	 * =========================================================================
+	 * This stores a monolog instance. If one is not supplied by the consurmer
+	 * of this class we will create our own. If a string has been supplied
+	 * instead of a monolong instance we will assume it is a file path.
+	 */
+	public static $log = './callmerpc.log';
+	
+	/**
+	 * Property: loglevel
+	 * =========================================================================
+	 * How much detail to you want to see in your log file. We default to debug.
+	 */
+	private $loglevel = Logger::DEBUG;
+	
+	/**
+	 * Property: timezone
+	 * =========================================================================
+	 * This stores the timezone that we are running in, I live in Geelong.
+	 * So it defaults to GMT+10.
+	 */
+	private $timezone = 'Australia/Melbourne';
+	
+	/**
+	 * Property: ip
+	 * =========================================================================
+	 * What IP will we listen to? Defaults to everything.
+	 */
+	private $ip = '0.0.0.0';
+	
+	/**
+	 * Property: port
+	 * =========================================================================
+	 * What port will the server listen on?
+	 * Defaults to 1337, hey cause we are elite :)
+	 */
+	private $port = 1337;
+	
 	/**
 	 * Property: path
 	 * =========================================================================
 	 * This stores the root location of the rpc method files.
 	 */
-	private $path = '';
+	private $path = './methods';
 	
 	/**
 	 * Method: __construct
@@ -35,7 +81,7 @@ class Server
 	 * 
 	 * Parameters:
 	 * -------------------------------------------------------------------------
-	 * $path - The directory that the method files are stored in.
+	 * $options - An array of values, with keys the same as the properties above
 	 * 
 	 * Throws:
 	 * -------------------------------------------------------------------------
@@ -45,198 +91,104 @@ class Server
 	 * -------------------------------------------------------------------------
 	 * void
 	 */
-	public function __construct($path)
+	public function __construct($options = array())
 	{
-		// Setup some error handling
-		$this->ExceptionHandler();
+		// Output our header
+		$this->OutputHeader();
 		
-		// Normalise the path
-		$this->path = realpath($path);
-		
-		// Make sure it exists
-		if (!is_dir($this->path))
+		// Set some options
+		foreach ($options as $key => $value)
 		{
-			throw new \Exception
-			(
-				'The path you have specfied to your RPC Methods is invalid! `'
-				.$this->path.'`'
-			);
+			if (isset($this->{$key}))
+			{
+				$this->{$key} = $value;
+			}
+			elseif (isset(self::$key))
+			{
+				self::$key = $value;
+			}
 		}
 		
-		if (isset($_GET['rpdl']))
+		// Setup our logger
+		if (!self::$log instanceof Logger)
 		{
-			// Show the json version of the descriptor page
-			new Rpdl\Json($this->path);
-		}
-		else
-		{
-			// Get our request data
-			$GET_REQUEST = urldecode($_SERVER['QUERY_STRING']);
-			$POST_REQUEST = file_get_contents("php://input");
+			// Copy the filepath
+			$logfile = self::$log;
 			
-			// What type of request is it?
-			if (!empty($GET_REQUEST))
-			{
-				$this->ParseRequest($GET_REQUEST);
-			}
-			elseif(!empty($POST_REQUEST))
-			{
-				$this->ParseRequest($POST_REQUEST);
-			}
-			else
-			{
-				// Show the html version of the descriptor page
-				new Rpdl\Html($this->path);
-			}
+			// Create a new monolog logger
+			self::$log = new Logger('log');
+			
+			// Log to the console
+			self::$log->pushHandler
+			(
+				new StreamHandler('php://stdout', $this->loglevel)
+			);
+			
+			// As well as to a file
+			self::$log->pushHandler
+			(
+				new RotatingFileHandler($logfile, 7, $this->loglevel)
+			);
+			
+			// This will tell us where the log entry was made from
+			self::$log->pushProcessor(new IntrospectionProcessor());
 		}
-	}
-	
-	/**
-	 * Method: ParseRequest
-	 * =========================================================================
-	 * 
-	 * Parameters:
-	 * -------------------------------------------------------------------------
-	 * $request_json - 
-	 * 
-	 * Throws:
-	 * -------------------------------------------------------------------------
-	 * 
-	 * 
-	 * Returns:
-	 * -------------------------------------------------------------------------
-	 * n/a
-	 */
-	private function ParseRequest($request_json)
-	{
-		// Decode the json
-		$request = json_decode($request_json);
 		
-		// Do we have a valid method name
-		if (isset($request->method))
+		// Set the default timezone
+		date_default_timezone_set($this->timezone);
+		
+		// Setup the HTTP Server
+		$loop = React\EventLoop\Factory::create();
+		$socket = new React\Socket\Server($loop);
+		$http = new React\Http\Server($socket, $loop);
+		
+		// Pass each request to our request handler
+		$http->on('request', function($req, $res)
 		{
-			// Make sure it does not contain any double dots
-			if (strpos($request->method, '..') === false)
-			{
-				// Build the full file path to the method file
-				$method_file = $this->path.'/'.$request->method.'.php';
-				
-				// Does the file exist
-				if (file_exists($method_file))
-				{
-					// It does so lets include it
-					require_once($method_file);
-					
-					// Swap out any path slashes for the other type
-					$funcname = str_replace('/', '\\', $request->method);
-					
-					// Create the argument array
-					$args = [];
-					$function = new \ReflectionFunction($funcname);
-					foreach ($function->getParameters() as $param)
-					{
-						if (isset($request->{$param->getName()}))
-						{
-							$args[$param->getPosition()] =
-								$request->{$param->getName()};
-						}
-						else
-						{
-							if ($param->isOptional() === false)
-							{
-								throw new \Exception
-								(
-									'You are missing a function parameter! '.
-									'Please add `'.$param->getName().'` - '.
-									'oh yeah I remember now...'
-								);
-							}
-						}
-					}
-					
-					// Invoke the function
-					$this->ReturnResponse($function->invokeArgs($args));
-				}
-				else
-				{
-					// 404 error
-					throw new \Exception
-					(
-						'You have requested a method that does not exist, '.
-						'this is your 404 error!'
-					);
-				}
-			}
-			else
-			{
-				// Hacking attempt
-				throw new \Exception
-				(
-					'Your method name cannot have `..` in it - '.
-					'its almost like you are trying to hack in to my server...'.
-					'go hack someone who cares!'
-				);
-			}
-		}
-		else
-		{
-			// The method for whatever reason wasn't valid
-			throw new \Exception('Invalid method name!');
-		}
-	}
-	
-	/**
-	 * Method: ReturnResponse
-	 * =========================================================================
-	 * 
-	 * Parameters:
-	 * -------------------------------------------------------------------------
-	 * $data - 
-	 * 
-	 * Throws:
-	 * -------------------------------------------------------------------------
-	 * n/a
-	 * 
-	 * Returns:
-	 * -------------------------------------------------------------------------
-	 * n/a
-	 */
-	private function ReturnResponse($data)
-	{
-		header('Content-type: application/json;');
-		echo json_encode
-		([
-			'response' => 'success',
-			'results' => $data
-		]);
-	}
-	
-	/**
-	 * Method: ExceptionHandler
-	 * =========================================================================
-	 * 
-	 * Parameters:
-	 * -------------------------------------------------------------------------
-	 * n/a
-	 * 
-	 * Throws:
-	 * -------------------------------------------------------------------------
-	 * n/a
-	 * 
-	 * Returns:
-	 * -------------------------------------------------------------------------
-	 * n/a
-	 */
-	private function ExceptionHandler()
-	{
-		set_exception_handler(function($e)
-		{
-			header('Content-type: application/json;');
-			echo json_encode
-			([
-				'response' => 'fail',
-				'message' => $e->getMessage(),
-			]);
+			new Gears\CallMeRpc\Controller($req, $res);
 		});
+		
+		// Bind the server to an ip and port
+		$socket->listen($this->port, $this->ip);
+		
+		// Tell the world whats happening
+		self::$log->addInfo
+		(
+			'CallMeRpc running at http://'.$this->ip.':'. $this->port.'/'
+		);
+		
+		// Start the loop
+		$loop->run();
+	}
+	
+	/**
+	 * Method: OutputHeader
+	 * =========================================================================
+	 * This just spits out a nice looking ASCII Header.
+	 * 
+	 * Parameters:
+	 * -------------------------------------------------------------------------
+	 * n/a
+	 * 
+	 * Throws:
+	 * -------------------------------------------------------------------------
+	 * n/a
+	 * 
+	 * Returns:
+	 * -------------------------------------------------------------------------
+	 * n/a
+	 */
+	private function OutputHeader()
+	{
+		echo
+			"\n".
+			"      _________         __   __      _____        __________                    \n".
+			"      \_   ___ \_____  |  | |  |    /     \   ____\______   \______   ____      \n".
+			"      /    \  \/\__  \ |  | |  |   /  \ /  \_/ __ \|       _/\____ \_/ ___\     \n".
+			"      \     \____/ __ \|  |_|  |__/    Y    \  ___/|    |   \|  |_> >  \___     \n".
+			"       \______  (____  /____/____/\____|__  /\___  >____|_  /|   __/ \___  >    \n".
+			"              \/     \/                   \/     \/       \/ |__|        \/     \n".
+			"\n"
+		;
 	}
 }
