@@ -109,6 +109,9 @@ class Server
 			}
 		}
 		
+		// Set the default timezone
+		date_default_timezone_set($this->timezone);
+		
 		// Setup our logger
 		if (!self::$log instanceof Logger)
 		{
@@ -133,9 +136,6 @@ class Server
 			// This will tell us where the log entry was made from
 			self::$log->pushProcessor(new IntrospectionProcessor());
 		}
-		
-		// Set the default timezone
-		date_default_timezone_set($this->timezone);
 		
 		// Setup the HTTP Server
 		$loop = React\EventLoop\Factory::create();
