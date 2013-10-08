@@ -13,11 +13,13 @@
 
 namespace Gears\CallMeRpc;
 
-// Import monolog
 use \Monolog\Logger;
 use \Monolog\Handler\StreamHandler;
 use \Monolog\Handler\RotatingFileHandler;
 use \Monolog\Processor\IntrospectionProcessor;
+use \React\EventLoop;
+use \React\Socket;
+use \React\Http;
 
 /**
  * Class: Server
@@ -138,14 +140,14 @@ class Server
 		}
 		
 		// Setup the HTTP Server
-		$loop = React\EventLoop\Factory::create();
-		$socket = new React\Socket\Server($loop);
-		$http = new React\Http\Server($socket, $loop);
+		$loop = EventLoop\Factory::create();
+		$socket = new Socket\Server($loop);
+		$http = new Http\Server($socket, $loop);
 		
 		// Pass each request to our request handler
 		$http->on('request', function($req, $res)
 		{
-			new Gears\CallMeRpc\Controller($req, $res);
+			new Controller($req, $res);
 		});
 		
 		// Bind the server to an ip and port
