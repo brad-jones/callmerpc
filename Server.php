@@ -74,7 +74,7 @@ class Server
 	 * =========================================================================
 	 * This stores the root location of the rpc method files.
 	 */
-	private $path = './methods';
+	public static $path = './methods';
 	
 	/**
 	 * Method: __construct
@@ -140,6 +140,19 @@ class Server
 			{
 				self::$log->pushProcessor(new IntrospectionProcessor());
 			}
+		}
+		
+		// Normalise the path
+		self::$path = realpath(self::$path);
+		
+		// Make sure it exists
+		if (!is_dir(self::$path))
+		{
+			throw new \Exception
+			(
+				'The path you have specfied to your RPC Methods is invalid! `'
+				.self::$path.'`'
+			);
 		}
 		
 		// Setup the HTTP Server
