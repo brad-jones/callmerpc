@@ -13,8 +13,23 @@
 
 namespace Gears\CallMeRpc\Rpdl;
 
-class MethodList
+abstract class MethodList
 {
+	/**
+	 * Method: Render
+	 * =========================================================================
+	 * Must be provided by the extending class
+	 * 
+	 * Parameters:
+	 * -------------------------------------------------------------------------
+	 * n/a
+	 * 
+	 * Returns:
+	 * -------------------------------------------------------------------------
+	 * string
+	 */
+	abstract public function Render();
+	
 	/**
 	 * Method: Get
 	 * =========================================================================
@@ -27,13 +42,9 @@ class MethodList
 	 * -------------------------------------------------------------------------
 	 * n/a
 	 * 
-	 * Throws:
-	 * -------------------------------------------------------------------------
-	 * n/a
-	 * 
 	 * Returns:
 	 * -------------------------------------------------------------------------
-	 * n/a
+	 * array
 	 */
 	protected function Get()
 	{
@@ -55,7 +66,7 @@ class MethodList
 			)
 			{
 				// Include the method file
-				require($file);
+				require_once($file);
 				
 				// Extract the method name from the filename
 				$path_parts = pathinfo($file);

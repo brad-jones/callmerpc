@@ -18,28 +18,34 @@ class Html extends MethodList
 	/**
 	 * Method: Render
 	 * =========================================================================
+	 * This will generate a single HTML5 page that contains a list of all the
+	 * methods that are avaliable to be called. The page also contains the
+	 * ability to test the methods easily.
 	 * 
 	 * Parameters:
-	 * -------------------------------------------------------------------------
-	 * $path - The directory that the method files are stored in.
-	 * 
-	 * Throws:
 	 * -------------------------------------------------------------------------
 	 * n/a
 	 * 
 	 * Returns:
 	 * -------------------------------------------------------------------------
-	 * n/a
+	 * html
 	 */
 	public function Render()
 	{
+		// Grab the methods list
 		$this->methods = $this->Get();
 		
-		//$http = 'http'; if ($_SERVER['HTTP_HOST'] == 443) $http .= 's';
-		//$this->endpoint = $http.'://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
+		// Work out the endpoint address
+		if (\Gears\CallMeRpc\Server::$ip == '0.0.0.0')
+		{
+			$this->endpoint = 'http://127.0.0.1:'.\Gears\CallMeRpc\Server::$port.'/';
+		}
+		else
+		{
+			$this->endpoint = 'http://'.\Gears\CallMeRpc\Server::$ip.':'.\Gears\CallMeRpc\Server::$port.'/';
+		}
 		
-		$this->endpoint = 'http://127.0.0.1:1337/';
-		
+		// Built some html
 		return
 		'<!DOCTYPE html>
 			<html>

@@ -59,7 +59,7 @@ class Server
 	 * =========================================================================
 	 * What IP will we listen to? Defaults to everything.
 	 */
-	private $ip = '0.0.0.0';
+	public static $ip = '0.0.0.0';
 	
 	/**
 	 * Property: port
@@ -67,7 +67,7 @@ class Server
 	 * What port will the server listen on?
 	 * Defaults to 1337, hey cause we are elite :)
 	 */
-	private $port = 1337;
+	public static $port = 1337;
 	
 	/**
 	 * Property: path
@@ -168,12 +168,12 @@ class Server
 		});
 		
 		// Bind the server to an ip and port
-		$socket->listen($this->port, $this->ip);
+		$socket->listen(self::$port, self::$ip);
 		
 		// Tell the world whats happening
 		self::$log->addInfo
 		(
-			'CallMeRpc running at http://'.$this->ip.':'. $this->port.'/'
+			'CallMeRpc running at http://'.self::$ip.':'. self::$port.'/'
 		);
 		
 		// Start the loop

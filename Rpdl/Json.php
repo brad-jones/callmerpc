@@ -16,7 +16,7 @@ namespace Gears\CallMeRpc\Rpdl;
 class Json extends MethodList
 {
 	/**
-	 * Method: __construct
+	 * Method: Render
 	 * =========================================================================
 	 * Fairly simple really, all we do is take the array that the base
 	 * MethodList class creats for us, strip out the docblock to make the
@@ -35,11 +35,8 @@ class Json extends MethodList
 	 * -------------------------------------------------------------------------
 	 * n/a
 	 */
-	public function __construct($path)
+	public function Render()
 	{
-		// Make sure the path gets set
-		parent::__construct($path);
-		
 		// We don't care for the docblock stuff so lets get ride of it
 		$rpdl = $this->Get(); $json_rpdl = [];
 		foreach ($rpdl as $methodname => $method)
@@ -47,8 +44,7 @@ class Json extends MethodList
 			$json_rpdl[$methodname] = $method['params'];
 		}
 		
-		// Output the new array as json
-		header('Content-type: application/json;');
-		echo json_encode($json_rpdl);
+		// Return some json
+		return json_encode($json_rpdl);
 	}
 }

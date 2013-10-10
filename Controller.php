@@ -79,10 +79,13 @@ class Controller
 			// Check for an RPDL request
 			if (isset($this->request->getQuery()['rpdl']))
 			{
+				// Tell the world whats happening
+				Server::$log->addInfo('Successful RPDL JSON Request');
+				
 				// Show the json version of the descriptor page
+				$page = new Rpdl\Json();
 				$this->response->writeHead(200, ['Content-Type' => 'application/json']);
-				$this->response->end(json_encode(['rpdl' => '123']));
-				//new Rpdl\Json($this->path);
+				$this->response->end($page->Render());
 			}
 			else
 			{
@@ -100,6 +103,9 @@ class Controller
 						// Do we actually have anything
 						if ($this->getdata == '')
 						{
+							// Tell the world whats happening
+							Server::$log->addInfo('Successful RPDL HTML Request');
+							
 							// Show the HTML human readable version
 							// of the descriptor page
 							$page = new Rpdl\Html();
