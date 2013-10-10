@@ -16,7 +16,7 @@ namespace Gears\CallMeRpc\Rpdl;
 class Html extends MethodList
 {
 	/**
-	 * Method: __construct
+	 * Method: Render
 	 * =========================================================================
 	 * 
 	 * Parameters:
@@ -31,16 +31,16 @@ class Html extends MethodList
 	 * -------------------------------------------------------------------------
 	 * n/a
 	 */
-	public function __construct($path)
+	public function Render()
 	{
-		parent::__construct($path);
-		
 		$this->methods = $this->Get();
 		
-		$http = 'http'; if ($_SERVER['HTTP_HOST'] == 443) $http .= 's';
-		$this->endpoint = $http.'://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
+		//$http = 'http'; if ($_SERVER['HTTP_HOST'] == 443) $http .= 's';
+		//$this->endpoint = $http.'://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
 		
-		echo
+		$this->endpoint = 'http://127.0.0.1:1337/';
+		
+		return
 		'<!DOCTYPE html>
 			<html>
 				<head>

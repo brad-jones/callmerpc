@@ -16,37 +16,6 @@ namespace Gears\CallMeRpc\Rpdl;
 class MethodList
 {
 	/**
-	 * Property: path
-	 * =========================================================================
-	 * This stores the root location of the rpc method files.
-	 */
-	private $path = '';
-	
-	/**
-	 * Method: __construct
-	 * =========================================================================
-	 * 
-	 * Parameters:
-	 * -------------------------------------------------------------------------
-	 * $path - The directory that the method files are stored in.
-	 * 
-	 * Throws:
-	 * -------------------------------------------------------------------------
-	 * n/a
-	 * 
-	 * Returns:
-	 * -------------------------------------------------------------------------
-	 * n/a
-	 */
-	public function __construct($path)
-	{
-		// We don't bother doing any checks this time.
-		// We assume if you called this directly you were
-		// smart enough to check yourself.
-		$this->path = $path;
-	}
-	
-	/**
 	 * Method: Get
 	 * =========================================================================
 	 * This method generates an array of all the remote procedure methods,
@@ -74,14 +43,13 @@ class MethodList
 		// Loop through all our method files
 		$objects = new \RecursiveIteratorIterator
 		(
-			new \RecursiveDirectoryIterator($this->path)
+			new \RecursiveDirectoryIterator(\Gears\CallMeRpc\Server::$path)
 		);
 		foreach($objects as $file => $object)
 		{
 			// Strip out some files from the list
 			if
 			(
-				strpos($file, $_SERVER['SCRIPT_NAME']) === false AND
 				strpos($file, '/.') === false AND
 				strpos($file, '/..') === false
 			)
@@ -97,7 +65,7 @@ class MethodList
 					'\\',
 					str_replace
 					(
-						$this->path,
+						\Gears\CallMeRpc\Server::$path,
 						'',
 						$path_parts['dirname']
 					).

@@ -85,10 +85,6 @@ class Server
 	 * -------------------------------------------------------------------------
 	 * $options - An array of values, with keys the same as the properties above
 	 * 
-	 * Throws:
-	 * -------------------------------------------------------------------------
-	 *  - If the path to the RPC methods is invalid.
-	 * 
 	 * Returns:
 	 * -------------------------------------------------------------------------
 	 * void
@@ -143,16 +139,21 @@ class Server
 		}
 		
 		// Normalise the path
-		self::$path = realpath(self::$path);
+		$realpath = realpath(self::$path);
 		
 		// Make sure it exists
-		if (!is_dir(self::$path))
+		if (is_dir($realpath))
 		{
-			throw new \Exception
+			self::$path = $realpath;
+		}
+		else
+		{
+			self::$log->addError
 			(
 				'The path you have specfied to your RPC Methods is invalid! `'
 				.self::$path.'`'
 			);
+			exit;
 		}
 		
 		// Setup the HTTP Server
@@ -161,9 +162,9 @@ class Server
 		$http = new Http\Server($socket, $loop);
 		
 		// Pass each request to our request handler
-		$http->on('request', function($req, $res)
+		$http->on('request', function($request, $response)
 		{
-			new Controller($req, $res);
+			new Controller($request, $response);
 		});
 		
 		// Bind the server to an ip and port
