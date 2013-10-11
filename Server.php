@@ -33,11 +33,10 @@ class Server
 	/**
 	 * Property: log
 	 * =========================================================================
-	 * This stores a monolog instance. If one is not supplied by the consurmer
-	 * of this class we will create our own. If a string has been supplied
-	 * instead of a monolong instance we will assume it is a file path.
+	 * This stores a monolog instance. If one is not supplied by the
+	 * consurmer of this class we will create our own.
 	 */
-	public static $log = './callmerpc.log';
+	public static $log = null;
 	
 	/**
 	 * Property: loglevel
@@ -125,12 +124,6 @@ class Server
 				new StreamHandler('php://stdout', $this->loglevel)
 			);
 			
-			// As well as to a file
-			self::$log->pushHandler
-			(
-				new RotatingFileHandler($logfile, 7, $this->loglevel)
-			);
-			
 			// This will tell us where the log entry was made from
 			if ($this->loglevel == Logger::DEBUG)
 			{
@@ -138,8 +131,18 @@ class Server
 			}
 		}
 		
-		// Normalise the path
-		$realpath = realpath(self::$path);
+		// Are we running as a phar?
+		$phar = \Phar::running();
+		if($phar == '')
+		{
+			// Normalise the path
+			$realpath = realpath(self::$path);
+		}
+		else
+		{
+			// Normalise the path
+			$realpath = $phar.'/'.str_replace('./', '', self::$path);
+		}
 		
 		// Make sure it exists
 		if (is_dir($realpath))

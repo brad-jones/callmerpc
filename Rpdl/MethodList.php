@@ -56,6 +56,7 @@ abstract class MethodList
 		(
 			new \RecursiveDirectoryIterator(\Gears\CallMeRpc\Server::$path)
 		);
+		
 		foreach($objects as $file => $object)
 		{
 			// Strip out some files from the list
