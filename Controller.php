@@ -255,7 +255,17 @@ class Controller
 					}
 					
 					// Invoke the function
-					$this->ReturnResponse($function->invokeArgs($args), $request);
+					$results = $function->invokeArgs($args);
+					
+					// Check for an error
+					if (isset($results['error']))
+					{
+						$this->ReturnError($results['error']);
+					}
+					else
+					{
+						$this->ReturnResponse($results, $request);
+					}
 				}
 				else
 				{
