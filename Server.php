@@ -43,7 +43,7 @@ class Server
 	 * =========================================================================
 	 * How much detail to you want to see in your log file. We default to debug.
 	 */
-	private $loglevel = Logger::DEBUG;
+	private $loglevel = Logger::INFO;
 	
 	/**
 	 * Property: timezone
