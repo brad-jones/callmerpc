@@ -35,16 +35,6 @@ class Html extends MethodList
 		// Grab the methods list
 		$this->methods = $this->Get();
 		
-		// Work out the endpoint address
-		if (\Gears\CallMeRpc\Server::$ip == '0.0.0.0')
-		{
-			$this->endpoint = 'http://127.0.0.1:'.\Gears\CallMeRpc\Server::$port.'/';
-		}
-		else
-		{
-			$this->endpoint = 'http://'.\Gears\CallMeRpc\Server::$ip.':'.\Gears\CallMeRpc\Server::$port.'/';
-		}
-		
 		// Built some html
 		return
 		'<!DOCTYPE html>
@@ -262,7 +252,7 @@ class Html extends MethodList
 						$("#'.str_replace('/', '', $name).'-modal div.progress").show();
 						$.get
 						(
-							"'.$this->endpoint.'",
+							window.location.origin,
 							$("#'.str_replace('/', '', $name).'-modal textarea.request").val(),
 							function(data)
 							{
@@ -277,7 +267,7 @@ class Html extends MethodList
 						$("#'.str_replace('/', '', $name).'-modal div.progress").show();
 						$.post
 						(
-							"'.$this->endpoint.'",
+							window.location.origin,
 							$("#'.str_replace('/', '', $name).'-modal textarea.request").val(),
 							function(data)
 							{
