@@ -100,9 +100,9 @@ class Server
 			{
 				$this->{$key} = $value;
 			}
-			elseif (isset(self::$key))
+			elseif (isset(self::$$key))
 			{
-				self::$key = $value;
+				self::$$key = $value;
 			}
 		}
 		
