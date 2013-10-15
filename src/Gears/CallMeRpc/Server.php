@@ -187,10 +187,13 @@ class Server
 		$socket = new Socket\Server($loop);
 		$http = new Http\Server($socket, $loop);
 		
+		// Scope hack
+		$that = $this;
+		
 		// Pass each request to our request handler
-		$http->on('request', function($request, $response) use(&$this)
+		$http->on('request', function($request, $response) use(&$that)
 		{
-			new Controller($this, $request, $response);
+			new Controller($that, $request, $response);
 		});
 		
 		// Bind the server to an ip and port
