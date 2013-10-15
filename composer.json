@@ -12,7 +12,6 @@
 	},
 	"autoload":
 	{
-		"psr-0": { "Gears\\CallMeRpc\\": "" }
-	},
-	"target-dir": "Gears/CallMeRpc"
+		"psr-0": { "Gears\\CallMeRpc\\": "src/" }
+	}
 }

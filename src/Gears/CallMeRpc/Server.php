@@ -76,6 +76,29 @@ class Server
 	public static $path = './methods';
 	
 	/**
+	 * Property: methods
+	 * =========================================================================
+	 * This is an array of callables that are used instead of looking for the
+	 * methods in individual files. For example you could do this sort of thing.
+	 * 
+	 * new Server(['methods' => 
+	 * [
+	 * 		'SayHello' => function($name){ return 'Hello '.$name; },
+	 * 		'Math' =>
+	 * 		[
+	 * 			'Add' => function($a, $b){ return $a + $b; },
+	 * 			'Subtract' => function($a, $b){ return $a - $b; }
+	 * 		],
+	 * 		'MethodWithDocs' =>
+	 * 		[
+	 * 			'This is some notes on how to use this method',
+	 * 			function($foo){ return $foo.'bar'; }
+	 * 		]
+	 * ]]);
+	 */
+	public static $path = './methods';
+	
+	/**
 	 * Method: __construct
 	 * =========================================================================
 	 * Starts a new RPC server.
@@ -165,9 +188,9 @@ class Server
 		$http = new Http\Server($socket, $loop);
 		
 		// Pass each request to our request handler
-		$http->on('request', function($request, $response)
+		$http->on('request', function($request, $response) use(&$this)
 		{
-			new Controller($request, $response);
+			new Controller($this, $request, $response);
 		});
 		
 		// Bind the server to an ip and port
