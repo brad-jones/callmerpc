@@ -96,7 +96,7 @@ class Server
 	 * 		]
 	 * ]]);
 	 */
-	public static $path = './methods';
+	private $methods = './methods';
 	
 	/**
 	 * Method: __construct
