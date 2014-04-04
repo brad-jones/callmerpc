@@ -4,7 +4,7 @@
 	"homepage": "http://callmerpc.bjc.id.au",
 	"keywords": ["rpc", "json", "xml", "rest", "http", "server"],
 	"license": "MIT",
-	"require": { "php": ">=5.3" }
+	"require": { "php": ">=5.3" },
 	"autoload": { "psr-0": { "Gears\\CallMeRpc\\": "src/" } },
 	"target-dir": "Gears/CallMeRpc"
 }
