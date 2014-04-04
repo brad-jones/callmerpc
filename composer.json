@@ -1,25 +1,10 @@
 {
-	"name": "GravIT/CallMeRpc",
+	"name": "gears/callmerpc",
 	"description": "A very simple http rpc server, go on callme baby!",
-	"version": "1.0-alpha",
+	"homepage": "http://callmerpc.bjc.id.au",
 	"keywords": ["rpc", "json", "xml", "rest", "http", "server"],
 	"license": "MIT",
-	"authors":
-	[{
-		"name": "Brad Jones",
-		"email": "bj@gravit.com.au",
-		"homepage": "http://callmerpc.playground.gravit.com.au",
-		"role": "Developer"
-	}],
-	"autoload":
-	{
-		"psr-0":
-		{
-			"GravIT": "src/"
-		}
-	},
-	"require":
-	{
-		"php": ">=5.3"
-	}
+	"require": { "php": ">=5.3" }
+	"autoload": { "psr-0": { "Gears\\CallMeRpc\\": "src/" } },
+	"target-dir": "Gears/CallMeRpc"
 }

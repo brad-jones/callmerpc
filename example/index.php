@@ -7,7 +7,7 @@
 //     \______  (____  /____/____/\____|__  /\___  >____|_  /|   __/ \___  >    
 //            \/     \/                   \/     \/       \/ |__|        \/     
 // =============================================================================
-//         Designed and Developed by Brad Jones <bj @="gravit.com.au" />
+//          Designed and Developed by Brad Jones <brad @="bjc.id.au" />         
 // =============================================================================
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -16,10 +16,22 @@
  * that makes CallMeRpc actually work. For that see the src directory.
  */
 
-// Load our autoloader - i love composer :)
-require('../vendor/autoload.php');
+// Note for this example we are not using composer
+// hence these manual require statments.
+require('../src/Server.php');
+require('../src/Rpdl/MethodList.php');
+require('../src/Rpdl/Json.php');
+require('../src/Rpdl/Html.php');
 
 // To intialise a new REST/RPC server.
-new GravIT\CallMeRpc\Server('./');
+new Gears\CallMeRpc\Server('./');
 
 // Yep thats it folks
+
+/*
+ * !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+ * PLEASE NOTE FOR SECURITY REASONS I WOULD HIGHLY RECOMMEND
+ * YOU PLACE YOUR FUNCTION FILES OUTSIDE OF YOUR WEB SERVER
+ * DOCUMENT ROOT OR DISALLOW ACCESS TO THEM IN SOME FASHION.
+ * !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+ */

@@ -53,40 +53,40 @@
 					This is my take on JSON-RPC...
 				</p>
 				<p>
-					<a class="btn btn-lg btn-primary" role="button" href="#">Download Now</a>
-					<a class="btn btn-lg btn-info" role="button" href="#">GitHub Project</a>
+					<a class="btn btn-lg btn-primary" role="button" href="https://github.com/phpgearbox/callmerpc/releases">Download Now</a>
+					<a class="btn btn-lg btn-info" role="button" href="https://github.com/phpgearbox/callmerpc">GitHub Project</a>
 				</p>
 			</div>
 			<div class="row marketing">
 				<div class="col-lg-6">
 					<h4>What is this?</h4>
 					<p>
-						This is a HTTP RPC server. You define methods as single namespaced PHP files
-						containing a single function or class (some methods might make use of private
-						helper methods to achieve their task). You can then call these methods via
-						normal GET or POST requests (a standard HTML web form could easily be tied to
-						a method).
+						This is a HTTP RPC server. You define methods as single
+						namespaced PHP files containing a single function. You
+						can then call these methods via normal GET or POST
+						requests (a standard HTML web form could easily be tied
+						to a method).
 					</p>
 					<p>
-						Each PHP function will return an array value which will then be
-						transformed into JSON or XML or some other serialisable format.
-						Configured as a server wide default and/or per request.
+						From your function you can return what ever data you
+						like. And CallMeRpc will pass it on ontouched to the
+						client. If however you return a serializable value such
+						as an array or object we will then convert it to JSON
+						for you.
 					</p>
 					<p>
-						POST requests can also be made using JSON or XML instead of POST values.
-						In this case whatever format is used for the request will be used for the
-						response.
+						There is no set structure or scheme to the RPC methods,
+						this is entirely left up to the developers who create
+						the methods.
 					</p>
 					<p>
-						There is no set structure or scheme to the RPC methods, this is entirely left
-						up to the developers who create the methods.
-					</p>
-					<p>
-						A decriptor file is automatically created, similar to WSDL for SOAP services.
-						This file again can be requested in JSON or XML which can then in turn be
-						parsed by the remote end to create callable stub methods.
-						However the decriptor file when requested by a web browser is transformed
-						into a human readable HTML5 page. With testing functionality built in.
+						A decriptor file is automatically created, similar to
+						WSDL for SOAP services. This file can be requested in
+						JSON which can then in turn be parsed by the remote end
+						to create callable stub methods. However the decriptor
+						file when requested by a web browser is transformed
+						into a human readable HTML5 page. With testing
+						functionality built in.
 					</p>
 				</div>
 				<div class="col-lg-6">
@@ -97,7 +97,13 @@
 						files on a PHP server and the you should be pretty
 						much right to go.
 					</p>
-					<p>TODO: More instructions here</p>
+					<p>
+						TODO: Hopfully this will turn into a nice
+						composer package one day...
+					</p>
+					<p>
+						TODO: More instructions here... I promise!
+					</p>
 				</div>
 			</div>
 			<div class="row marketing">
@@ -127,14 +133,10 @@
 			</div>
 			<div class="footer">
 				<p>
-					&copy <?php date_default_timezone_set('Australia/Melbourne'); echo date('Y'); ?>
-					Brad Jones
-					- <a href="mailto:brad@bjc.id.au">brad@bjc.id.au</a>
+					&copy Developed by Brad Jones -
+					<a href="mailto:brad@bjc.id.au">brad@bjc.id.au</a>
 				</p>
 			</div>
 		</div>
-		
-		<!-- Load our Javascript -->
-		<?php /*AssetMini::js(['jquery','bootstrap','main']);*/ ?>
 	</body>
 </html>

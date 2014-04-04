@@ -1,0 +1,4 @@
+.gitattributes export-ignore
+index.php export-ignore
+example/ export-ignore
+assets/ export-ignore

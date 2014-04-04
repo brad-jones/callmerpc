@@ -7,11 +7,11 @@
 //     \______  (____  /____/____/\____|__  /\___  >____|_  /|   __/ \___  >    
 //            \/     \/                   \/     \/       \/ |__|        \/     
 // =============================================================================
-//         Designed and Developed by Brad Jones <bj @="gravit.com.au" />
+//          Designed and Developed by Brad Jones <brad @="bjc.id.au" />         
 // =============================================================================
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace GravIT\CallMeRpc\Rpdl;
+namespace Gears\CallMeRpc\Rpdl;
 
 class MethodList
 {
